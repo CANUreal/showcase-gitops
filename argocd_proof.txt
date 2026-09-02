@@ -1,0 +1,283 @@
+
+~/Projects
+❯ kubectl get pods -n argocd
+NAME                                                READY   STATUS    RESTARTS       AGE
+argocd-application-controller-0                     1/1     Running   2 (5h4m ago)   2d1h
+argocd-applicationset-controller-5959f79d67-zxw7g   1/1     Running   2 (5h4m ago)   2d1h
+argocd-dex-server-6f84fd5569-wgkxd                  1/1     Running   2 (5h4m ago)   2d1h
+argocd-notifications-controller-5856884878-jfwh4    1/1     Running   2 (5h4m ago)   2d1h
+argocd-redis-86846d5986-q959q                       1/1     Running   2 (5h4m ago)   2d1h
+argocd-repo-server-7d44c57bc8-8f8bx                 1/1     Running   2 (5h4m ago)   2d1h
+argocd-server-8567f6cc96-5qm5l                      1/1     Running   2 (5h4m ago)   2d1h
+
+~/Projects
+❯ kubectl get applications -n argocd
+No resources found in argocd namespace.
+
+~/Projects
+❯ nvim showcase-gitops/apps/showcase-backend/application.yaml
+
+~/Projects took 5m34s
+❯ cd showcase-gitops
+
+showcase-gitops on  main [?]
+❯ kubectl apply -f apps/showcase-backend/application.yaml
+application.argoproj.io/showcase-backend created
+
+showcase-gitops on  main [?]
+❯ kubectl get applications -n argocd
+NAME               SYNC STATUS   HEALTH STATUS
+showcase-backend   Synced        Progressing
+
+showcase-gitops on  main [?]
+❯ kubectl describe applications -n argocd
+Name:         showcase-backend
+Namespace:    argocd
+Labels:       <none>
+Annotations:  <none>
+API Version:  argoproj.io/v1alpha1
+Kind:         Application
+Metadata:
+  Creation Timestamp:  2026-09-02T13:51:08Z
+  Generation:          10
+  Resource Version:    31951
+  UID:                 a5e2018b-93b8-40b9-a415-6f50fdd81679
+Spec:
+  Destination:
+    Namespace:  showcase
+    Server:     https://kubernetes.default.svc
+  Project:      default
+  Source:
+    Path:             apps/showcase-backend
+    Repo URL:         https://github.com/CANUreal/showcase-gitops.git
+    Target Revision:  main
+  Sync Policy:
+    Automated:
+      Prune:      true
+      Self Heal:  true
+    Sync Options:
+      CreateNamespace=true
+Status:
+  Controller Namespace:  argocd
+  Health:
+    Last Transition Time:  2026-09-02T13:51:11Z
+    Status:                Progressing
+  History:
+    Deploy Started At:  2026-09-02T13:51:11Z
+    Deployed At:        2026-09-02T13:51:11Z
+    Id:                 0
+    Initiated By:
+      Automated:  true
+    Revision:     b7e2c1ece1d4b3624fc7859a8c7628f6a1d325e4
+    Source:
+      Path:             apps/showcase-backend
+      Repo URL:         https://github.com/CANUreal/showcase-gitops.git
+      Target Revision:  main
+  Operation State:
+    Finished At:  2026-09-02T13:51:11Z
+    Message:      successfully synced (all tasks run)
+    Operation:
+      Initiated By:
+        Automated:  true
+      Retry:
+        Limit:  5
+      Sync:
+        Prune:     true
+        Revision:  b7e2c1ece1d4b3624fc7859a8c7628f6a1d325e4
+        Source:
+          Path:             apps/showcase-backend
+          Repo URL:         https://github.com/CANUreal/showcase-gitops.git
+          Target Revision:  main
+        Sync Options:
+          CreateNamespace=true
+    Phase:       Succeeded
+    Started At:  2026-09-02T13:51:11Z
+    Sync Result:
+      Resources:
+        Group:
+        Hook Phase:  Running
+        Kind:        Namespace
+        Message:     namespace/showcase created
+        Name:        showcase
+        Namespace:
+        Status:      Synced
+        Sync Phase:  PreSync
+        Version:     v1
+        Group:       apps
+        Hook Phase:  Running
+        Images:
+          quay.io/showcase/showcase:latest
+        Kind:        Deployment
+        Message:     deployment.apps/showcase-backend created
+        Name:        showcase-backend
+        Namespace:   showcase
+        Status:      Synced
+        Sync Phase:  Sync
+        Version:     v1
+      Revision:      b7e2c1ece1d4b3624fc7859a8c7628f6a1d325e4
+      Source:
+        Path:              apps/showcase-backend
+        Repo URL:          https://github.com/CANUreal/showcase-gitops.git
+        Target Revision:   main
+  Reconciled At:           2026-09-02T13:51:11Z
+  Resource Health Source:  appTree
+  Resources:
+    Group:      apps
+    Kind:       Deployment
+    Name:       showcase-backend
+    Namespace:  showcase
+    Status:     Synced
+    Version:    v1
+  Source Hydrator:
+  Source Type:  Directory
+  Summary:
+    Images:
+      quay.io/showcase/showcase:latest
+  Sync:
+    Compared To:
+      Destination:
+        Namespace:  showcase
+        Server:     https://kubernetes.default.svc
+      Source:
+        Path:             apps/showcase-backend
+        Repo URL:         https://github.com/CANUreal/showcase-gitops.git
+        Target Revision:  main
+    Revision:             b7e2c1ece1d4b3624fc7859a8c7628f6a1d325e4
+    Status:               Synced
+Events:
+  Type    Reason              Age   From                           Message
+  ----    ------              ----  ----                           -------
+  Normal  OperationStarted    16s   argocd-application-controller  Initiated automated sync to 'b7e2c1ece1d4b3624fc7859a8c7628f6a1d325e4'
+  Normal  ResourceUpdated     16s   argocd-application-controller  Updated sync status:  -> OutOfSync
+  Normal  ResourceUpdated     16s   argocd-application-controller  Updated health status:  -> Missing
+  Normal  OperationCompleted  16s   argocd-application-controller  Sync operation to b7e2c1ece1d4b3624fc7859a8c7628f6a1d325e4 succeeded
+  Normal  ResourceUpdated     16s   argocd-application-controller  Updated sync status: OutOfSync -> Synced
+  Normal  ResourceUpdated     16s   argocd-application-controller  Updated health status: Missing -> Progressing
+
+showcase-gitops on  main [?]
+❯ kubectl describe applications -n argocd
+Name:         showcase-backend
+Namespace:    argocd
+Labels:       <none>
+Annotations:  <none>
+API Version:  argoproj.io/v1alpha1
+Kind:         Application
+Metadata:
+  Creation Timestamp:  2026-09-02T13:51:08Z
+  Generation:          10
+  Resource Version:    31951
+  UID:                 a5e2018b-93b8-40b9-a415-6f50fdd81679
+Spec:
+  Destination:
+    Namespace:  showcase
+    Server:     https://kubernetes.default.svc
+  Project:      default
+  Source:
+    Path:             apps/showcase-backend
+    Repo URL:         https://github.com/CANUreal/showcase-gitops.git
+    Target Revision:  main
+  Sync Policy:
+    Automated:
+      Prune:      true
+      Self Heal:  true
+    Sync Options:
+      CreateNamespace=true
+Status:
+  Controller Namespace:  argocd
+  Health:
+    Last Transition Time:  2026-09-02T13:51:11Z
+    Status:                Progressing
+  History:
+    Deploy Started At:  2026-09-02T13:51:11Z
+    Deployed At:        2026-09-02T13:51:11Z
+    Id:                 0
+    Initiated By:
+      Automated:  true
+    Revision:     b7e2c1ece1d4b3624fc7859a8c7628f6a1d325e4
+    Source:
+      Path:             apps/showcase-backend
+      Repo URL:         https://github.com/CANUreal/showcase-gitops.git
+      Target Revision:  main
+  Operation State:
+    Finished At:  2026-09-02T13:51:11Z
+    Message:      successfully synced (all tasks run)
+    Operation:
+      Initiated By:
+        Automated:  true
+      Retry:
+        Limit:  5
+      Sync:
+        Prune:     true
+        Revision:  b7e2c1ece1d4b3624fc7859a8c7628f6a1d325e4
+        Source:
+          Path:             apps/showcase-backend
+          Repo URL:         https://github.com/CANUreal/showcase-gitops.git
+          Target Revision:  main
+        Sync Options:
+          CreateNamespace=true
+    Phase:       Succeeded
+    Started At:  2026-09-02T13:51:11Z
+    Sync Result:
+      Resources:
+        Group:
+        Hook Phase:  Running
+        Kind:        Namespace
+        Message:     namespace/showcase created
+        Name:        showcase
+        Namespace:
+        Status:      Synced
+        Sync Phase:  PreSync
+        Version:     v1
+        Group:       apps
+        Hook Phase:  Running
+        Images:
+          quay.io/showcase/showcase:latest
+        Kind:        Deployment
+        Message:     deployment.apps/showcase-backend created
+        Name:        showcase-backend
+        Namespace:   showcase
+        Status:      Synced
+        Sync Phase:  Sync
+        Version:     v1
+      Revision:      b7e2c1ece1d4b3624fc7859a8c7628f6a1d325e4
+      Source:
+        Path:              apps/showcase-backend
+        Repo URL:          https://github.com/CANUreal/showcase-gitops.git
+        Target Revision:   main
+  Reconciled At:           2026-09-02T13:51:11Z
+  Resource Health Source:  appTree
+  Resources:
+    Group:      apps
+    Kind:       Deployment
+    Name:       showcase-backend
+    Namespace:  showcase
+    Status:     Synced
+    Version:    v1
+  Source Hydrator:
+  Source Type:  Directory
+  Summary:
+    Images:
+      quay.io/showcase/showcase:latest
+  Sync:
+    Compared To:
+      Destination:
+        Namespace:  showcase
+        Server:     https://kubernetes.default.svc
+      Source:
+        Path:             apps/showcase-backend
+        Repo URL:         https://github.com/CANUreal/showcase-gitops.git
+        Target Revision:  main
+    Revision:             b7e2c1ece1d4b3624fc7859a8c7628f6a1d325e4
+    Status:               Synced
+Events:
+  Type    Reason              Age   From                           Message
+  ----    ------              ----  ----                           -------
+  Normal  OperationStarted    118s  argocd-application-controller  Initiated automated sync to 'b7e2c1ece1d4b3624fc7859a8c7628f6a1d325e4'
+  Normal  ResourceUpdated     118s  argocd-application-controller  Updated sync status:  -> OutOfSync
+  Normal  ResourceUpdated     118s  argocd-application-controller  Updated health status:  -> Missing
+  Normal  OperationCompleted  118s  argocd-application-controller  Sync operation to b7e2c1ece1d4b3624fc7859a8c7628f6a1d325e4 succeeded
+  Normal  ResourceUpdated     118s  argocd-application-controller  Updated sync status: OutOfSync -> Synced
+  Normal  ResourceUpdated     118s  argocd-application-controller  Updated health status: Missing -> Progressing
+
+showcase-gitops on  main [?]
+❯
