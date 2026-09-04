@@ -17,7 +17,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: migrate
-          image: quay.io/showcase/showcase:something_that_will_changed_by_ci_after_push
+          image: quay.io/showcase/showcase:cd42f0d1eec8d410494a0167a5a90cf56771e4ae
           command: ["/migrate"]
           # we need to give the database url from secrets in kubernetes to run this job 
           # because this job will migrate the table from ent to database
