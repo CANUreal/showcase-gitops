@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: showcase-backend
-          image: quay.io/showcase/showcase:34778ac81d1b7c577b123c9e3bcf0e7091d57a54
+          image: quay.io/showcase/showcase:c0e767b911c319b3639e1152f93f4bed1235deaf
           ports:
             - containerPort: 8080
           env:
